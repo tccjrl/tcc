@@ -1,7 +1,7 @@
 import os.path
 import sqlite3
 
-caminho_bancoDeDados = r'C:\Users\johny\OneDrive\tcc\db.sqlite3'
+caminho_bancoDeDados = r'/home/johny/PycharmProjects/tcc/db.sqlite3'
 
 IDENTIFICADOR_TABELA_SNMPGET = 'snmp_get_'
 FORMATO_DATA_NOME_TABELA_SNMPGET = '%d_%m_%Y_%H_%M_%S'
