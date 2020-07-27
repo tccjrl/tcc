@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Item</title>
+</head>
+<body>
+<h1>Formulario para cadastro de Itens</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+    {% if item %}
+        <a href="{% url 'url_deletaItem' item.id %}">Deletar</a>
+    {% endif %}
+</form>
+</body>
+</html>

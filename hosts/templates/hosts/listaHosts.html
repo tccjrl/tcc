@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Hosts</title>
+</head>
+<body>
+    <h1>Cadastro de Hosts</h1>
+
+    <h2>Hosts</h2>
+    <a href="{% url 'url_home' %}">Voltar</a>
+    <ul>
+    {% for Host in lista_hosts %}
+        <li>{{ Host.host_nome }} - <a href="{% url 'url_atualizaHost' Host.id %}">Atualizar</a>  <a
+                href="{% url 'url_deletaHost' Host.id %}">Deleta</a> </li>
+    {% endfor %}
+    </ul>
+<a href="{% url 'url_novoHost' %}">Novo Host</a>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário Template</title>
+</head>
+<body>
+    <h1>Formulário Template</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+        {% if template %}
+            <a href="{% url 'url_delataTemplate' template.id %}">Deletar</a>
+        {% endif %}
+    </form>
+</body>
+</html>

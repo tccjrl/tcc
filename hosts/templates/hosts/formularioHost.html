@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Host</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+        {% if host %}
+            <a href="{% url 'url_deletaHost' host.id %}">Deletar</a>
+        {% endif %}
+    </form>
+</body>
+</html>
