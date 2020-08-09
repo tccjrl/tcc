@@ -5,11 +5,8 @@ from funcoes_Tabelas.man_tabelas_itens import criaTabelaSnmpGet, deletaTabela, F
     IDENTIFICADOR_TABELA_SNMPGET
 import datetime
 
-from hosts.tasks import *
-
 
 def homeView(request):
-#    cria_tabela_celery.delay()
     return render(request, 'hosts/home.html')
 
 

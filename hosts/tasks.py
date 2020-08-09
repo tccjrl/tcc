@@ -10,22 +10,7 @@ from funcoes_Tabelas.man_tabelas_itens import criaTabelaSnmpGet
 def add(x, y):
     return x + y
 
-
-@shared_task
-def mul(x, y):
-    return x * y
-
-
-@shared_task
-def xsum(numbers):
-    return sum(numbers)
-
 @shared_task
 def hello_world():
     print('Hello World!')
-    return 0
-
-@shared_task
-def cria_tabela_celery():
-    criaTabelaSnmpGet('TASKCELERYTEST')
     return 0
