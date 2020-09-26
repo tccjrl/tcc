@@ -10,12 +10,12 @@ TIPOS_DE_INFORMACAO_RETORNADA_SNMP_GET = [
 ]
 # Lista de unidades do intervado de atualização
 UNIDADES_INTERVALO_ATUALIZACAO = [
-    ('sec', 'Segundos'),
-    ('min', 'Minutos'),
-    ('hrs', 'Horas'),
-    ('dia', 'Dias'),
-    ('mes', 'Meses'),
-    ('ano', 'Anos')
+    ('seconds', 'Segundos'),
+    ('minutes', 'Minutos'),
+    ('hours', 'Horas'),
+    ('days', 'Dias'),
+    ('months', 'Meses'),
+    ('years', 'Anos')
 ]
 
 

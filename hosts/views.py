@@ -3,6 +3,7 @@ from .models import Host, Template, Item
 from .forms import HostForm, TemplateForm, ItemForm
 from funcoes_Tabelas.man_tabelas_itens import criaTabelaSnmpGet, deletaTabela, FORMATO_DATA_NOME_TABELA_SNMPGET, \
     IDENTIFICADOR_TABELA_SNMPGET
+from hosts.tasks import create_task_snmpGet_host_created
 import datetime
 
 
@@ -35,6 +36,12 @@ def novoHost(request):  # Função recebe request do navegado
         # identificador + data e hora
 
         form.save()  # Salva o formulário segunda vez
+
+        create_task_snmpGet_host_created.s(host_nomeTabela_snmpGet=form.host_nomeTabela_snmpGet,
+                                           host_ip=form.host_ip,
+                                           host_porta=form.host_porta,
+                                           host_status=form.host_status).apply_async(countdown=2)
+
         return redirect('url_cadastroHost')  # Retorna para a página que lista os Hosts
 
     return render(request, 'hosts/formularioHost.html', data)  # Renderiza a página para criar um novo Host enviando a
