@@ -1,5 +1,6 @@
 import os.path
 import sqlite3
+import datetime
 
 caminho_bancoDeDados = r'/home/johny/PycharmProjects/tcc/db.sqlite3'
 
@@ -113,3 +114,12 @@ def pegaItensTemplatesHosts(template_id):
         return lista
     else:
         return print('Corrija o caminho do banco de dados')
+
+def insertSnmpGetResult(host_nomeTabela_snmpGet, id_item, nome_item, info):
+    if os.path.exists(caminho_bancoDeDados):
+        conexao = sqlite3.connect(caminho_bancoDeDados)
+        c = conexao.cursor()
+        c.execute("INSERT INTO " + host_nomeTabela_snmpGet + " VALUES (NULL," + str(id_item) + ",'" + nome_item + "','" + str(datetime.datetime.now().strftime(FORMATO_DATA_NOME_TABELA_SNMPGET)) + "','" + info + "')")
+
+        conexao.commit()
+        conexao.close()

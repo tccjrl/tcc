@@ -11,10 +11,13 @@ def snmpGet(ip, oid, community='public', versao_snmp=0, porta=161):
     )
 
     if errorIndication:
+        print("errorIndicator")
         return(errorIndication)
     elif errorStatus:
+        print("errorStatus")
         return('%s at %s' % (errorStatus.prettyPrint(),
                             errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
     else:
+        print("varBind")
         for varBind in varBinds:
             return(' = '.join([x.prettyPrint() for x in varBind]))
