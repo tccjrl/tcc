@@ -10,9 +10,11 @@ def snmpGet(ip, oid, community='public', versao_snmp=0, porta=161):
                ObjectType(ObjectIdentity(oid)))
     )
 
+    print(porta)
+
     if errorIndication:
-        print("errorIndicator")
-        return(errorIndication)
+        print(errorIndication)
+        return(str(errorIndication))
     elif errorStatus:
         print("errorStatus")
         return('%s at %s' % (errorStatus.prettyPrint(),

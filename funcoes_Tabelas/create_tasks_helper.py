@@ -1,4 +1,4 @@
-from hosts.models import Item
+from hosts.models import Item, Template
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
 
 
@@ -10,16 +10,28 @@ def getItens(host_nomeTabela_snmpGet,
                                 template__host__host_ip=host_ip,
                                 template__host__host_porta=host_porta,
                                 template__host__host_status=host_status)
-    return itens
+
+    itens_nao_repetidos = []
+    for item in itens:
+        if item not in itens_nao_repetidos:
+            itens_nao_repetidos.append(item)
+
+    return itens_nao_repetidos
+
 
 def createTaskSnmpGet(host_nomeTabela_snmpGet,
                       host_ip,
                       host_porta,
+                      templates,
                       item_id,
                       item_nome,
                       item_oid,
                       item_intervaloAtualizacao,
                       item_intervaloAtualizacaoUn):
+
+    template_ids = ''
+    for template in templates:
+            template_ids = template_ids + ('_template_id:' + str(template.id))
 
     intervalo_id = None
 
@@ -38,9 +50,9 @@ def createTaskSnmpGet(host_nomeTabela_snmpGet,
         print('NÃO ACHEI UM INTERVALO E SALVEI NO BD')
 
 
-    novaTask = PeriodicTask(name=host_nomeTabela_snmpGet + '_item_id:' + str(item_id),
+    novaTask = PeriodicTask(name=host_nomeTabela_snmpGet + str(template_ids) + '_item_id:' + str(item_id),
                             task='hosts.tasks.task_snmp_get',
-                            args='[' + '"' + host_nomeTabela_snmpGet + '", "' + str(item_id) + '", "' + item_nome + '", "' + host_ip + '", "' + item_oid + '"]',
+                            args='[' + '"' + host_nomeTabela_snmpGet + '", "' + str(item_id) + '", "' + item_nome + '", "' + host_ip + '", "' + item_oid + '", "' + str(host_porta) + '", "' + str(template_ids) + '"]',
                             kwargs='{}',
                             enabled=1,
                             interval_id=intervalo_id,
