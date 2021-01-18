@@ -18,6 +18,15 @@ UNIDADES_INTERVALO_ATUALIZACAO = [
     ('years', 'Anos')
 ]
 
+# Lista de unidades do intervado de atualização
+UNIDADES_INTERVALO_ARMAZENAMENTO = [
+    ('minutes', 'Minutos'),
+    ('hours', 'Horas'),
+    ('days', 'Dias'),
+    ('months', 'Meses'),
+    ('years', 'Anos')
+]
+
 
 # Classe Model que gerencia a tabela Item do banco de dados
 class Item(models.Model):
@@ -28,8 +37,8 @@ class Item(models.Model):
     item_intervaloAtualizacaoUn = models.CharField(choices=UNIDADES_INTERVALO_ATUALIZACAO, max_length=100,
                                                    default=UNIDADES_INTERVALO_ATUALIZACAO.__getitem__(1))
     item_tempoArmazenamentoDados = models.PositiveSmallIntegerField(default=90)
-    item_tempoArmazenamentoDadosUn = models.CharField(choices=UNIDADES_INTERVALO_ATUALIZACAO, max_length=100,
-                                                      default=UNIDADES_INTERVALO_ATUALIZACAO.__getitem__(3))
+    item_tempoArmazenamentoDadosUn = models.CharField(choices=UNIDADES_INTERVALO_ARMAZENAMENTO, max_length=100,
+                                                      default=UNIDADES_INTERVALO_ARMAZENAMENTO.__getitem__(2))
 
     # Função que retorna na view o nome do objeto Item
     def __str__(self):

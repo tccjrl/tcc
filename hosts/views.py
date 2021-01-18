@@ -3,7 +3,7 @@ from .models import Host, Template, Item
 from .forms import HostForm, TemplateForm, ItemForm
 from funcoes_Tabelas.man_tabelas_itens import criaTabelaSnmpGet, deletaTabela, FORMATO_DATA_NOME_TABELA_SNMPGET, \
     IDENTIFICADOR_TABELA_SNMPGET
-from hosts.tasks import create_task_snmpGet_host_created, create_task_snmpGet_host_updated, create_task_snmpGet_template_updated, create_task_snmpGet_template_deleted, create_task_snmpGet_item_updated
+from hosts.tasks import create_task_snmpGet_host_created, create_task_snmpGet_host_updated, create_task_snmpGet_template_updated, create_task_snmpGet_template_deleted, create_task_snmpGet_item_updated, create_task_CleanData_host_created, create_task_CleanData_host_updated, create_task_CleanData_template_updated, create_task_CleanData_template_deleted, create_task_CleanData_item_updated
 import datetime
 from django_celery_beat.models import PeriodicTask
 
@@ -44,6 +44,11 @@ def novoHost(request):  # Função recebe request do navegado
                                                host_porta=form.host_porta,
                                                host_status=form.host_status).apply_async(countdown=2)
 
+            create_task_CleanData_host_created.s(host_nomeTabela_snmpGet=form.host_nomeTabela_snmpGet,
+                                               host_ip=form.host_ip,
+                                               host_porta=form.host_porta,
+                                               host_status=form.host_status).apply_async(countdown=2)
+
         return redirect('url_cadastroHost')  # Retorna para a página que lista os Hosts
 
     return render(request, 'hosts/formularioHost.html', data)  # Renderiza a página para criar um novo Host enviando a
@@ -66,6 +71,11 @@ def atualizaHost(request, pk):  # Função recebe request do navegador e a ID do
                                            host_ip=form.cleaned_data.get("host_ip"),
                                            host_porta=form.cleaned_data.get("host_porta"),
                                            host_status=form.cleaned_data.get("host_status")).apply_async(countdown=2)
+
+        create_task_CleanData_host_updated.s(host_nomeTabela_snmpGet=host.host_nomeTabela_snmpGet,
+                                           host_ip=form.cleaned_data.get("host_ip"),
+                                           host_porta=form.cleaned_data.get("host_porta"),
+                                           host_status=form.cleaned_data.get("host_status")).apply_async(countdown=4)
 
         return redirect('url_cadastroHost')  # Redireciona para a lista de Hosts cadastrados no banco de dados
 
@@ -127,6 +137,9 @@ def atualizaTemplate(request, pk):  # Função recebe request do navegador e a I
         create_task_snmpGet_template_updated.s(template_id=pk,
             template_nome=form.cleaned_data.get("template_nome")).apply_async(countdown=2)
 
+        create_task_CleanData_template_updated.s(template_id=pk,
+            template_nome=form.cleaned_data.get("template_nome")).apply_async(countdown=4)
+
         return redirect('url_listaTemplate')  # Redireciona para a lista de Templates cadastrados no banco de dados
 
     return render(request, 'hosts/formularioTemplate.html', data)  # Renderiza o template com o formulario preenchido
@@ -144,6 +157,8 @@ def deletaTemplate(request, pk):  # Função recebe a request e o ID do Template
 
     template.delete()  # deleta o Template
     create_task_snmpGet_template_deleted.s(hosts_ids=hosts_ids).apply_async(countdown=2)
+
+    create_task_CleanData_template_deleted.s(hosts_ids=hosts_ids).apply_async(countdown=4)
     return redirect('url_listaTemplate')  # Redireciona para a lista de Templates cadastrados no banco de dados
 
 
@@ -179,6 +194,10 @@ def atualizaItem(request, pk):  # Função recebe request do navegador e a ID do
     item = Item.objects.get(pk=pk)  # Pega a ID do item selecionado no template.html
     item_nome_old = item.item_nome
     item_oid_old = item.item_oid
+
+    item_tempoArmazenamentoDados_old = item.item_tempoArmazenamentoDados
+    item_tempoArmazenamentoDadosUn_old = item.item_tempoArmazenamentoDadosUn
+
     form = ItemForm(request.POST or None, instance=item)  # Cria um formulário que recebe o request.POST quando
     # a função é chamada pelo botão salvar da tela ou None quando chamada para criar um novo Item, também recebe a
     # ID do Item selecionado
@@ -193,6 +212,11 @@ def atualizaItem(request, pk):  # Função recebe request do navegador e a ID do
                                            item_oid_old=item_oid_old,
                                            item_intervaloAtualizacao_old=item_intervaloAtualizacao,
                                            item_intervaloAtualizacaoUn_old=item_intervaloAtualizacaoUn).apply_async(countdown=2)
+
+        create_task_CleanData_item_updated.s(item_id=pk,
+                                           item_tempoArmazenamentoDados_old=item_tempoArmazenamentoDados_old,
+                                           item_tempoArmazenamentoDadosUn_old=item_tempoArmazenamentoDadosUn_old).apply_async(
+            countdown=4)
 
         return redirect('url_listaItem')  # Redireciona para a lista de Itens cadastrados no banco de dados
 

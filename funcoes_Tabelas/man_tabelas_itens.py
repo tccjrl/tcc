@@ -17,7 +17,7 @@ def criaTabelaSnmpGet(nome_tabela_snmpGet):
                   'id integer NOT NULL PRIMARY KEY AUTOINCREMENT, '
                   'id_item integer NOT NULL, '
                   'nome_item varchar(100) NOT NULL, '
-                  'data varchar(24) NOT NULL, '
+                  'data varchar(60) NOT NULL, '
                   'info varchar(150) NOT NULL)')
 
         conexao.close()
@@ -119,7 +119,44 @@ def insertSnmpGetResult(host_nomeTabela_snmpGet, id_item, nome_item, info):
     if os.path.exists(caminho_bancoDeDados):
         conexao = sqlite3.connect(caminho_bancoDeDados)
         c = conexao.cursor()
-        c.execute("INSERT INTO " + host_nomeTabela_snmpGet + " VALUES (NULL," + str(id_item) + ",'" + nome_item + "','" + str(datetime.datetime.now().strftime(FORMATO_DATA_NOME_TABELA_SNMPGET)) + "','" + info + "')")
+        c.execute("INSERT INTO " + host_nomeTabela_snmpGet + " VALUES (NULL," + str(id_item) + ",'" + nome_item + "','" + str(datetime.datetime.now()) + "','" + info + "')")
+
+        conexao.commit()
+        conexao.close()
+
+def clean_data(item_id,
+               item_tempoArmazenamentoDados,
+               item_tempoArmazenamentoDadosUn,
+               host_nomeTabela_snmpGet):
+
+    if (item_tempoArmazenamentoDadosUn == 'seconds'):
+        item_tempoArmazenamentoDadosUn = 'second'
+
+    elif (item_tempoArmazenamentoDadosUn == 'minutes'):
+        item_tempoArmazenamentoDadosUn = 'minute'
+
+    elif (item_tempoArmazenamentoDadosUn == 'hours'):
+        item_tempoArmazenamentoDadosUn = 'hour'
+
+    elif (item_tempoArmazenamentoDadosUn == 'days'):
+        item_tempoArmazenamentoDadosUn = 'day'
+
+    elif (item_tempoArmazenamentoDadosUn == 'months'):
+        item_tempoArmazenamentoDadosUn = 'month'
+
+    else:
+        item_tempoArmazenamentoDadosUn = 'year'
+
+    if os.path.exists(caminho_bancoDeDados):
+        conexao = sqlite3.connect(caminho_bancoDeDados)
+        c = conexao.cursor()
+
+        cmdDateTimeSQLite = """'now', 'localtime', '-{} {}'""".format(item_tempoArmazenamentoDados, item_tempoArmazenamentoDadosUn)
+        print(cmdDateTimeSQLite)
+
+        cmd = 'DELETE FROM ' + host_nomeTabela_snmpGet + ' WHERE id_item=' + str(item_id) + ' AND data < datetime(' + cmdDateTimeSQLite + ')'
+        print(cmd)
+        c.execute(cmd)
 
         conexao.commit()
         conexao.close()
