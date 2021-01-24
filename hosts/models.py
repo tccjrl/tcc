@@ -69,6 +69,7 @@ class Host(models.Model):
     host_template = models.ManyToManyField(Template)
     host_observacoes = models.TextField(null=True, blank=True)
     host_status = models.BooleanField(default=True)
+    host_community = models.CharField(max_length=32, default='public')
 
     # Função que retorna na view o nome do objeto Host
     def __str__(self):

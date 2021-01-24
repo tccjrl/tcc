@@ -7,7 +7,7 @@ from .models import Host, Template, Item
 class HostForm(ModelForm):
     class Meta:
         model = Host
-        fields = ['host_nome', 'host_nomeTabela_snmpGet', 'host_ip', 'host_porta', 'host_template', 'host_observacoes',
+        fields = ['host_nome', 'host_nomeTabela_snmpGet', 'host_ip', 'host_porta', 'host_community', 'host_template', 'host_observacoes',
                   'host_status']
         exclude = ['host_nomeTabela_snmpGet']
 

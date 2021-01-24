@@ -14,8 +14,8 @@ from .models import Host, Item, Template
 
 
 @shared_task
-def task_snmp_get(host_nomeTabela_snmpGet, id_item, nome_item, ip, oid, porta, template_ids):
-    info = snmpGet(ip, oid, porta=porta)
+def task_snmp_get(host_nomeTabela_snmpGet, host_community, id_item, nome_item, ip, oid, porta, template_ids):
+    info = snmpGet(ip=ip, oid=oid, porta=porta, community=host_community)
     insertSnmpGetResult(host_nomeTabela_snmpGet, id_item, nome_item, info)
     return info
 
@@ -24,7 +24,8 @@ def task_snmp_get(host_nomeTabela_snmpGet, id_item, nome_item, ip, oid, porta, t
 def create_task_snmpGet_host_created(host_nomeTabela_snmpGet,
                                      host_ip,
                                      host_porta,
-                                     host_status):
+                                     host_status,
+                                     host_community):
     itens = getItens(host_nomeTabela_snmpGet=host_nomeTabela_snmpGet,
                      host_ip=host_ip,
                      host_porta=host_porta,
@@ -37,22 +38,24 @@ def create_task_snmpGet_host_created(host_nomeTabela_snmpGet,
                                             host__host_porta=host_porta,
                                             host__host_status=host_status)
 
-        createTaskSnmpGet(host_nomeTabela_snmpGet,
-                          host_ip,
-                          host_porta,
-                          templates,
-                          item.id,
-                          item.item_nome,
-                          item.item_oid,
-                          item.item_intervaloAtualizacao,
-                          item.item_intervaloAtualizacaoUn)
+        createTaskSnmpGet(host_nomeTabela_snmpGet=host_nomeTabela_snmpGet,
+                          host_ip=host_ip,
+                          host_porta=host_porta,
+                          host_community=host_community,
+                          templates=templates,
+                          item_id=item.id,
+                          item_nome=item.item_nome,
+                          item_oid=item.item_oid,
+                          item_intervaloAtualizacao=item.item_intervaloAtualizacao,
+                          item_intervaloAtualizacaoUn=item.item_intervaloAtualizacaoUn,)
 
 
 @shared_task
 def create_task_snmpGet_host_updated(host_nomeTabela_snmpGet,
                                      host_ip,
                                      host_porta,
-                                     host_status):
+                                     host_status,
+                                     host_community):
     lista_PeriodicTasks_cadastradas = PeriodicTask.objects.filter(name__contains=('SNMPGETTASK=' + host_nomeTabela_snmpGet))
 
     for periodicTask in lista_PeriodicTasks_cadastradas:
@@ -71,15 +74,16 @@ def create_task_snmpGet_host_updated(host_nomeTabela_snmpGet,
                                                 host__host_porta=host_porta,
                                                 host__host_status=host_status)
 
-            createTaskSnmpGet(host_nomeTabela_snmpGet,
-                              host_ip,
-                              host_porta,
-                              templates,
-                              item.id,
-                              item.item_nome,
-                              item.item_oid,
-                              item.item_intervaloAtualizacao,
-                              item.item_intervaloAtualizacaoUn)
+            createTaskSnmpGet(host_nomeTabela_snmpGet=host_nomeTabela_snmpGet,
+                              host_ip=host_ip,
+                              host_porta=host_porta,
+                              host_community=host_community,
+                              templates=templates,
+                              item_id=item.id,
+                              item_nome=item.item_nome,
+                              item_oid=item.item_oid,
+                              item_intervaloAtualizacao=item.item_intervaloAtualizacao,
+                              item_intervaloAtualizacaoUn=item.item_intervaloAtualizacaoUn)
 
 
 @shared_task
@@ -106,15 +110,16 @@ def create_task_snmpGet_template_updated(template_id, template_nome):
                                                     host__host_porta=host.host_porta,
                                                     host__host_status=host.host_status)
 
-                createTaskSnmpGet(host.host_nomeTabela_snmpGet,
-                                  host.host_ip,
-                                  host.host_porta,
-                                  templates,
-                                  item.id,
-                                  item.item_nome,
-                                  item.item_oid,
-                                  item.item_intervaloAtualizacao,
-                                  item.item_intervaloAtualizacaoUn)
+                createTaskSnmpGet(host_nomeTabela_snmpGet=host.host_nomeTabela_snmpGet,
+                                  host_ip=host.host_ip,
+                                  host_porta=host.host_porta,
+                                  host_community=host.host_community,
+                                  templates=templates,
+                                  item_id=item.id,
+                                  item_nome=item.item_nome,
+                                  item_oid=item.item_oid,
+                                  item_intervaloAtualizacao=item.item_intervaloAtualizacao,
+                                  item_intervaloAtualizacaoUn=item.item_intervaloAtualizacaoUn)
 
 
 @shared_task
@@ -142,15 +147,16 @@ def create_task_snmpGet_template_deleted(hosts_ids):
                                                     host__host_porta=host.host_porta,
                                                     host__host_status=host.host_status)
 
-                createTaskSnmpGet(host.host_nomeTabela_snmpGet,
-                                  host.host_ip,
-                                  host.host_porta,
-                                  templates,
-                                  item.id,
-                                  item.item_nome,
-                                  item.item_oid,
-                                  item.item_intervaloAtualizacao,
-                                  item.item_intervaloAtualizacaoUn)
+                createTaskSnmpGet(host_nomeTabela_snmpGet=host.host_nomeTabela_snmpGet,
+                                  host_ip=host.host_ip,
+                                  host_porta=host.host_porta,
+                                  host_community=host.host_community,
+                                  templates=templates,
+                                  item_id=item.id,
+                                  item_nome=item.item_nome,
+                                  item_oid=item.item_oid,
+                                  item_intervaloAtualizacao=item.item_intervaloAtualizacao,
+                                  item_intervaloAtualizacaoUn=item.item_intervaloAtualizacaoUn)
 
 
 @shared_task

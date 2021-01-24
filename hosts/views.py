@@ -42,7 +42,8 @@ def novoHost(request):  # Função recebe request do navegado
             create_task_snmpGet_host_created.s(host_nomeTabela_snmpGet=form.host_nomeTabela_snmpGet,
                                                host_ip=form.host_ip,
                                                host_porta=form.host_porta,
-                                               host_status=form.host_status).apply_async(countdown=2)
+                                               host_status=form.host_status,
+                                               host_community=form.host_community).apply_async(countdown=2)
 
             create_task_CleanData_host_created.s(host_nomeTabela_snmpGet=form.host_nomeTabela_snmpGet,
                                                host_ip=form.host_ip,
@@ -70,7 +71,8 @@ def atualizaHost(request, pk):  # Função recebe request do navegador e a ID do
         create_task_snmpGet_host_updated.s(host_nomeTabela_snmpGet=host.host_nomeTabela_snmpGet,
                                            host_ip=form.cleaned_data.get("host_ip"),
                                            host_porta=form.cleaned_data.get("host_porta"),
-                                           host_status=form.cleaned_data.get("host_status")).apply_async(countdown=2)
+                                           host_status=form.cleaned_data.get("host_status"),
+                                           host_community=form.cleaned_data.get("host_community")).apply_async(countdown=2)
 
         create_task_CleanData_host_updated.s(host_nomeTabela_snmpGet=host.host_nomeTabela_snmpGet,
                                            host_ip=form.cleaned_data.get("host_ip"),

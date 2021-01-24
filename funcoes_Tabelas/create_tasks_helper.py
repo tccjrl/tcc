@@ -22,6 +22,7 @@ def getItens(host_nomeTabela_snmpGet,
 def createTaskSnmpGet(host_nomeTabela_snmpGet,
                       host_ip,
                       host_porta,
+                      host_community,
                       templates,
                       item_id,
                       item_nome,
@@ -51,7 +52,7 @@ def createTaskSnmpGet(host_nomeTabela_snmpGet,
     novaTask = PeriodicTask(
         name='SNMPGETTASK=' + host_nomeTabela_snmpGet + str(template_ids) + '_item_id:' + str(item_id),
         task='hosts.tasks.task_snmp_get',
-        args='[' + '"' + host_nomeTabela_snmpGet + '", "' + str(
+        args='[' + '"' + host_nomeTabela_snmpGet + '", "' + host_community + '", "' + str(
             item_id) + '", "' + item_nome + '", "' + host_ip + '", "' + item_oid + '", "' + str(
             host_porta) + '", "' + str(template_ids) + '"]',
         kwargs='{}',
