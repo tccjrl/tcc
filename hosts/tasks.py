@@ -12,6 +12,8 @@ from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from .models import Host, Item, Template
 
+import time
+
 
 @shared_task
 def task_snmp_get(host_nomeTabela_snmpGet, host_community, id_item, nome_item, ip, oid, porta, template_ids):
@@ -59,7 +61,12 @@ def create_task_snmpGet_host_updated(host_nomeTabela_snmpGet,
     lista_PeriodicTasks_cadastradas = PeriodicTask.objects.filter(name__contains=('SNMPGETTASK=' + host_nomeTabela_snmpGet))
 
     for periodicTask in lista_PeriodicTasks_cadastradas:
-        periodicTask.delete()
+        try:
+            periodicTask.delete()
+        except Exception as e:
+            print(str(e.args[0]))
+            time.sleep(4)
+            periodicTask.delete()
 
     if host_status:
         itens = getItens(host_nomeTabela_snmpGet=host_nomeTabela_snmpGet,
@@ -239,7 +246,12 @@ def create_task_CleanData_host_updated(host_nomeTabela_snmpGet,
     lista_PeriodicTasks_cadastradas = PeriodicTask.objects.filter(name__contains=('CLEANDATATASK=' + host_nomeTabela_snmpGet))
 
     for periodicTask in lista_PeriodicTasks_cadastradas:
-        periodicTask.delete()
+        try:
+            periodicTask.delete()
+        except Exception as e:
+            print(str(e.args[0]))
+            time.sleep(4)
+            periodicTask.delete()
 
     if host_status:
         itens = getItens(host_nomeTabela_snmpGet=host_nomeTabela_snmpGet,
