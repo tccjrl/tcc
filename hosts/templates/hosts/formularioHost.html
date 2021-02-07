@@ -1,17 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Novo Host</title>
-</head>
-<body>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
+{% extends 'base.html' %}
+
+{% block base %}Dados do host{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <h1>Dados do host</h1>
+        <form id="form" action="" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <l><button type="submit">Salvar</button></l>
+        </form>
         {% if host %}
-            <a href="{% url 'url_deletaHost' host.id %}">Deletar</a>
+            <l><a href="{% url 'url_deletaHost' host.id %}"><button id="delete">Deletar</button></a></l>
         {% endif %}
-    </form>
-</body>
-</html>
+        <br>
+        <l><a href="{% url 'url_cadastroHost' %}"><button id="voltar">Voltar</button></a></l>
+    </body>
+    </html>
+{% endblock %}

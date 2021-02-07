@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Formulário Template</title>
-</head>
-<body>
-    <h1>Formulário Template</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
+{% extends 'base.html' %}
+
+{% block base %}Dados do template{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <h1>Dados do template</h1>
+        <form id="form" action="" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Salvar</button>
+        </form>
         {% if template %}
-            <a href="{% url 'url_delataTemplate' template.id %}">Deletar</a>
+            <a href="{% url 'url_delataTemplate' template.id %}"><button id="delete">Deletar</button></a>
         {% endif %}
-    </form>
-</body>
-</html>
+        <br>
+        <l><a href="{% url 'url_listaTemplate' %}"><button id="voltar">Voltar</button></a></l>
+    </body>
+    </html>
+{% endblock %}

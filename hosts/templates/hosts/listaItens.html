@@ -1,18 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Itens</title>
-</head>
-<body>
-<h1>Lista de itens</h1>
-<a href="{% url 'url_home' %}">Voltar</a>
-    <u>
-        {% for Item in lista_itens %}
-            <li>{{ Item }} - <a href="{% url 'url_atualizaItem' Item.id %}">Atualizar</a> -
-                <a href="{% url 'url_deletaItem' Item.id %}">Deletar</a> </li>
-        {% endfor %}
-    </u>
-<a href="{% url 'url_novoItem' %}">Novo Item</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block base %}Itens{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+    <h1>Itens</h1>
+    <l><a href="{% url 'url_novoItem' %}"><button id="button_add">Adicionar item</button></a></l>
+        <ul id="lista_cadastrados">
+            {% for Item in lista_itens %}
+                <li><a id="a_cadastros" href="{% url 'url_atualizaItem' Item.id %}">{{ Item.item_nome }} - {{ Item.item_oid }}</a>
+            {% endfor %}
+            {% if lista_itens.count == 0 %}
+                <li id="li_nenhum_registro_encontrado">Nenhum registro encontrado</li>
+            {% endif %}
+        </ul>
+    </body>
+    </html>
+{% endblock %}

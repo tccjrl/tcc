@@ -1,0 +1,23 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block base %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'hosts/css/base.css' %}">
+</head>
+<body>
+    <nav id="menu">
+        <ul>
+            <li><a id="opcoes_menu" href="{% url 'url_home' %}">Home</a></li>
+            <li><a id="opcoes_menu" href="{% url 'url_cadastroHost' %}">Hosts</a> </li>
+            <li><a id="opcoes_menu" href="{% url 'url_listaTemplate' %}">Templates</a> </li>
+            <li><a id="opcoes_menu" href="{% url 'url_listaItem' %}">Itens</a> </li>
+        </ul>
+    </nav>
+    <div id="conteudo_pagina">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

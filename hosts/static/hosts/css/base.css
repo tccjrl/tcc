@@ -1,0 +1,167 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+#opcoes_menu{
+    text-decoration: none;
+    color: black;
+}
+
+body{
+    font-family: Arial;
+}
+
+ul{
+    list-style: none;
+}
+
+#menu{
+    background: rgba(16,16,16,.5);
+    width: 15%;
+    height: 100%;
+    position: absolute;
+}
+
+ul{
+    position: relative;
+    width: 100%;
+}
+
+#opcoes_menu{
+    display: block;
+    padding: 20px 5px;
+    color: white;
+}
+
+#opcoes_menu:hover{
+    background: rgb(176,224,230);
+    color: black;
+}
+
+#conteudo_pagina {
+    position: absolute;
+    left: 15%;
+    width: 85%;
+    height: 100%;
+}
+
+/*======================================================================================================================
+Configurações para os templates:
+- listaHosts.html
+- listaItens.html
+- listaTemplates.html
+========================================================================================================================
+ */
+h1{
+    text-align: center;
+}
+
+#a_cadastros{
+    display: block;
+    padding: 20px 5px;
+    text-decoration: none;
+    color: black;
+    background: rgb(176,224,230);
+    text-align: center;
+    margin: 2px;
+}
+
+#lista_ativos{
+    color: green;
+    font-size: 25px;
+}
+
+#lista_inativos{
+    color: red;
+    font-size: 25px;
+}
+
+#lista_cadastrados{
+    position: relative;
+    top: 10%;
+}
+
+#li_nenhum_registro_encontrado{
+    display: block;
+    text-align: center;
+    padding: 20px 5px;
+    text-decoration: none;
+    margin: 2px;
+}
+
+#a_cadastros:hover{
+    background: rgba(16,16,16,.5);
+    color: white;
+}
+
+#button_add{
+    color: black;
+    padding: 20px 20px;
+    position: relative;
+    top: 5%;
+    margin: 2px;
+    color: green;
+    border-color: green;
+}
+
+#button_add:hover {
+    background: green;
+    color: white;
+}
+
+/*======================================================================================================================
+Configurações css para os formularios
+========================================================================================================================
+*/
+
+#form{
+    text-align: center;
+}
+
+#form label{
+    display: block;
+}
+
+form p{
+    margin: 15px;
+}
+
+form select{
+    list-style: armenian;
+}
+
+form button{
+    padding: 5px 50px;
+    color: green;
+    border-color: green;
+}
+
+form button:hover{
+    background: green;
+    color: white;
+}
+
+#delete{
+    padding: 5px 50px;
+    color: red;
+    border-color: red;
+}
+
+#delete:hover{
+    background: red;
+    color: white;
+}
+
+#voltar{
+    padding: 5px 50px;
+    color: rgba(16, 16, 16, .5);
+    border-color: rgba(16, 16, 16, .5);
+    position: absolute;
+    left: 85%;
+}
+
+#voltar:hover{
+    background: rgba(16, 16, 16, .5);
+    color: white;
+}

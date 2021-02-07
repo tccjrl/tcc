@@ -1,20 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastro de Hosts</title>
-</head>
-<body>
-    <h1>Cadastro de Hosts</h1>
+{% extends 'base.html' %}
 
-    <h2>Hosts</h2>
-    <a href="{% url 'url_home' %}">Voltar</a>
-    <ul>
-    {% for Host in lista_hosts %}
-        <li>{{ Host.host_nome }} - <a href="{% url 'url_atualizaHost' Host.id %}">Atualizar</a>  <a
-                href="{% url 'url_deletaHost' Host.id %}">Deleta</a> </li>
-    {% endfor %}
-    </ul>
-<a href="{% url 'url_novoHost' %}">Novo Host</a>
-</body>
-</html>
+{% block base %}Hosts{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+        </head>
+        <body>
+            <h1>Hosts</h1>
+            <l><a href="{% url 'url_novoHost' %}"><button id="button_add">Adicionar host</button></a></l>
+            <ul id="lista_cadastrados">
+            <li id="lista_ativos">Ativos</li>
+                {% for Host in lista_hosts_ativos %}
+                    {% if Host.host_status %}
+                        <li><a id="a_cadastros" href="{% url 'url_atualizaHost' Host.id %}">{{ Host.host_nome }} - {{ Host.host_ip }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if lista_hosts_ativos.count == 0 %}
+                    <li id="li_nenhum_registro_encontrado">Nenhum registro encontrado</li>
+                {% endif %}
+            </ul>
+            <br>
+            <ul id="lista_cadastrados">
+            <li id="lista_inativos">Inativos</li>
+                {% for Host in lista_hosts_inativos %}
+                    {% if not Host.host_status %}
+                        <li><a id="a_cadastros" href="{% url 'url_atualizaHost' Host.id %}">{{ Host.host_nome }} - {{ Host.host_ip }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if lista_hosts_inativos.count == 0 %}
+                    <li id="li_nenhum_registro_encontrado">Nenhum registro encontrado</li>
+                {% endif %}
+            </ul>
+        </body>
+    </html>
+{% endblock %}

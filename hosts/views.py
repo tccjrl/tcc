@@ -14,8 +14,10 @@ def homeView(request):
 
 # Função responsável por exibir o template listaHost.html que é responsável por exibir a lista de Hosts cadastrados
 def listaHost(request):  # Função recebe request do navegador
-    data = {'lista_hosts': Host.objects.all()}  # Cria um dicionário chamado 'data' com uma lista dentro chamada
-    # 'lista_hosts' que recebe todos os Hosts cadastrados no banco de dados
+    data = {
+        'lista_hosts_ativos': Host.objects.filter(host_status=True),
+        'lista_hosts_inativos': Host.objects.filter(host_status=False)
+    }
     return render(request, 'hosts/listaHosts.html', data)  # Retorna a request, template e dicionario criado na função
 
 

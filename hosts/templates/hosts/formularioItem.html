@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Formulario Item</title>
-</head>
-<body>
-<h1>Formulario para cadastro de Itens</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
+{% extends 'base.html' %}
+
+{% block base %}Dados do item{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+    <h1>Dados do item</h1>
+    <form id="form" action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
     {% if item %}
-        <a href="{% url 'url_deletaItem' item.id %}">Deletar</a>
+        <a href="{% url 'url_deletaItem' item.id %}"><button id="delete">Deletar</button></a>
     {% endif %}
-</form>
-</body>
-</html>
+    <br>
+    <l><a href="{% url 'url_listaItem' %}"><button id="voltar">Voltar</button></a></l>
+    </body>
+    </html>
+{% endblock %}

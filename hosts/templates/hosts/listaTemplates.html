@@ -1,19 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista Templates</title>
-</head>
-<body>
-<h1>Lista de Templates cadastrados</h1>
-<a href="{% url 'url_home' %}">Voltar</a>
-<u>
-    {% for Templates in lista_templates %}
-        <li>{{ Templates }} - <a href="{% url 'url_atualizaTemplate' Templates.id %}">Atualizar</a> -
-            <a href="{% url 'url_delataTemplate' Templates.id %}">Deletar</a> </li>
-    {% endfor %}
-</u>
+{% extends 'base.html' %}
 
-<a href="{% url 'url_novoTemplate' %}">Novo Template</a>
-</body>
-</html>
+{% block base %}Templates{% endblock %}
+
+{% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+    <h1>Templates</h1>
+    <l><a href="{% url 'url_novoTemplate' %}"><button id="button_add">Adicionar Template</button> </a></l>
+    <ul id="lista_cadastrados">
+        {% for Templates in lista_templates %}
+            <li><a id="a_cadastros" href="{% url 'url_atualizaTemplate' Templates.id %}">{{ Templates.template_nome }}</a>
+        {% endfor %}
+        {% if lista_templates.count == 0 %}
+            <li id="li_nenhum_registro_encontrado">Nenhum registro encontrado</li>
+        {% endif %}
+    </ul>
+    </body>
+    </html>
+{% endblock %}
