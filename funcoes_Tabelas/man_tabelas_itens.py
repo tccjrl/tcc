@@ -117,12 +117,14 @@ def pegaItensTemplatesHosts(template_id):
 
 def insertSnmpGetResult(host_nomeTabela_snmpGet, id_item, nome_item, info):
     if os.path.exists(caminho_bancoDeDados):
+
         conexao = sqlite3.connect(caminho_bancoDeDados)
         c = conexao.cursor()
         c.execute("INSERT INTO " + host_nomeTabela_snmpGet + " VALUES (NULL," + str(id_item) + ",'" + nome_item + "','" + str(datetime.datetime.now()) + "','" + info + "')")
 
         conexao.commit()
         conexao.close()
+
 
 def clean_data(item_id,
                item_tempoArmazenamentoDados,
@@ -160,3 +162,22 @@ def clean_data(item_id,
 
         conexao.commit()
         conexao.close()
+
+def pegaDadosDash(tabela_snmpGet, id_item, ):
+    if os.path.exists(caminho_bancoDeDados):
+        conexao = sqlite3.connect(caminho_bancoDeDados)
+        c = conexao.cursor()
+        dados = []
+        labels = []
+
+        c.execute("SELECT data, info FROM %s WHERE id_item=%d" % (tabela_snmpGet, id_item))
+
+        for reg in c.fetchall():
+            labels.append(reg[0])
+            dados.append(reg[1])
+
+        conexao.close()
+
+        return [labels, dados]
+    else:
+        return print('Corrija o caminho do banco de dados')

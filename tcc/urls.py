@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from hosts.views import homeView, listaHost, novoHost, atualizaHost, deletaHost, listaTemplate, novoTemplate, atualizaTemplate, \
-    deletaTemplate, listaItem, novoItem, atualizaItem, deletaItem
+    deletaTemplate, listaItem, novoItem, atualizaItem, deletaItem, getData
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # ==================================================================================================================
     path('', homeView, name='url_home'),
+    path('api/data/', getData, name='api_data'),
     # ==================================================================================================================
     path('lista_host/', listaHost, name='url_cadastroHost'),
     path('novo_host/', novoHost, name='url_novoHost'),

@@ -2,14 +2,55 @@ from django.shortcuts import render, redirect
 from .models import Host, Template, Item
 from .forms import HostForm, TemplateForm, ItemForm
 from funcoes_Tabelas.man_tabelas_itens import criaTabelaSnmpGet, deletaTabela, FORMATO_DATA_NOME_TABELA_SNMPGET, \
-    IDENTIFICADOR_TABELA_SNMPGET
-from hosts.tasks import create_task_snmpGet_host_created, create_task_snmpGet_host_updated, create_task_snmpGet_template_updated, create_task_snmpGet_template_deleted, create_task_snmpGet_item_updated, create_task_CleanData_host_created, create_task_CleanData_host_updated, create_task_CleanData_template_updated, create_task_CleanData_template_deleted, create_task_CleanData_item_updated
+    IDENTIFICADOR_TABELA_SNMPGET, pegaDadosDash
+from hosts.tasks import create_task_snmpGet_host_created, create_task_snmpGet_host_updated, \
+    create_task_snmpGet_template_updated, create_task_snmpGet_template_deleted, create_task_snmpGet_item_updated, \
+    create_task_CleanData_host_created, create_task_CleanData_host_updated, create_task_CleanData_template_updated, \
+    create_task_CleanData_template_deleted, create_task_CleanData_item_updated
 import datetime
 from django_celery_beat.models import PeriodicTask
+from django.template.defaulttags import register
+from django.http import JsonResponse
 
+@register.filter
+def get_value_dict(dictionary, key):
+    return dictionary.get(key)
 
 def homeView(request):
     return render(request, 'hosts/home.html')
+
+def getData(request):
+    lista_host_data = []
+    hosts_ativos_query = Host.objects.filter(host_status=True)
+
+    for host in hosts_ativos_query:
+        host_dict = {}
+        lista_itens_dados = []
+        host_dict['nome_host'] = host.host_nome
+
+        lista_itens_host_query = Item.objects.filter(
+            template__host__host_nomeTabela_snmpGet=host.host_nomeTabela_snmpGet,
+            template__host__host_ip=host.host_ip,
+            template__host__host_porta=host.host_porta,
+            template__host__host_status=host.host_status)
+
+        for item in lista_itens_host_query:
+            item_dict = {}
+            item_dict['item_nome'] = item.item_nome
+            item_dict['item_tipoInformacao'] = item.item_tipoInformacao
+            labels_data = pegaDadosDash(tabela_snmpGet=host.host_nomeTabela_snmpGet, id_item=item.id)
+            item_dict['labels'] = labels_data[0]
+            item_dict['data'] = labels_data[1]
+            lista_itens_dados.append(item_dict)
+
+        host_dict['itens'] = lista_itens_dados
+
+        lista_host_data.append(host_dict)
+
+    data = {'lista_host_data': lista_host_data}
+
+    return JsonResponse(data)
+
 
 
 # Função responsável por exibir o template listaHost.html que é responsável por exibir a lista de Hosts cadastrados
@@ -48,9 +89,9 @@ def novoHost(request):  # Função recebe request do navegado
                                                host_community=form.host_community).apply_async(countdown=2)
 
             create_task_CleanData_host_created.s(host_nomeTabela_snmpGet=form.host_nomeTabela_snmpGet,
-                                               host_ip=form.host_ip,
-                                               host_porta=form.host_porta,
-                                               host_status=form.host_status).apply_async(countdown=2)
+                                                 host_ip=form.host_ip,
+                                                 host_porta=form.host_porta,
+                                                 host_status=form.host_status).apply_async(countdown=2)
 
         return redirect('url_cadastroHost')  # Retorna para a página que lista os Hosts
 
@@ -74,12 +115,13 @@ def atualizaHost(request, pk):  # Função recebe request do navegador e a ID do
                                            host_ip=form.cleaned_data.get("host_ip"),
                                            host_porta=form.cleaned_data.get("host_porta"),
                                            host_status=form.cleaned_data.get("host_status"),
-                                           host_community=form.cleaned_data.get("host_community")).apply_async(countdown=2)
+                                           host_community=form.cleaned_data.get("host_community")).apply_async(
+            countdown=2)
 
         create_task_CleanData_host_updated.s(host_nomeTabela_snmpGet=host.host_nomeTabela_snmpGet,
-                                           host_ip=form.cleaned_data.get("host_ip"),
-                                           host_porta=form.cleaned_data.get("host_porta"),
-                                           host_status=form.cleaned_data.get("host_status")).apply_async(countdown=4)
+                                             host_ip=form.cleaned_data.get("host_ip"),
+                                             host_porta=form.cleaned_data.get("host_porta"),
+                                             host_status=form.cleaned_data.get("host_status")).apply_async(countdown=4)
 
         return redirect('url_cadastroHost')  # Redireciona para a lista de Hosts cadastrados no banco de dados
 
@@ -139,10 +181,12 @@ def atualizaTemplate(request, pk):  # Função recebe request do navegador e a I
         form.save()  # Salva o formulário
 
         create_task_snmpGet_template_updated.s(template_id=pk,
-            template_nome=form.cleaned_data.get("template_nome")).apply_async(countdown=2)
+                                               template_nome=form.cleaned_data.get("template_nome")).apply_async(
+            countdown=2)
 
         create_task_CleanData_template_updated.s(template_id=pk,
-            template_nome=form.cleaned_data.get("template_nome")).apply_async(countdown=4)
+                                                 template_nome=form.cleaned_data.get("template_nome")).apply_async(
+            countdown=4)
 
         return redirect('url_listaTemplate')  # Redireciona para a lista de Templates cadastrados no banco de dados
 
@@ -215,11 +259,12 @@ def atualizaItem(request, pk):  # Função recebe request do navegador e a ID do
                                            item_nome_old=item_nome_old,
                                            item_oid_old=item_oid_old,
                                            item_intervaloAtualizacao_old=item_intervaloAtualizacao,
-                                           item_intervaloAtualizacaoUn_old=item_intervaloAtualizacaoUn).apply_async(countdown=2)
+                                           item_intervaloAtualizacaoUn_old=item_intervaloAtualizacaoUn).apply_async(
+            countdown=2)
 
         create_task_CleanData_item_updated.s(item_id=pk,
-                                           item_tempoArmazenamentoDados_old=item_tempoArmazenamentoDados_old,
-                                           item_tempoArmazenamentoDadosUn_old=item_tempoArmazenamentoDadosUn_old).apply_async(
+                                             item_tempoArmazenamentoDados_old=item_tempoArmazenamentoDados_old,
+                                             item_tempoArmazenamentoDadosUn_old=item_tempoArmazenamentoDadosUn_old).apply_async(
             countdown=4)
 
         return redirect('url_listaItem')  # Redireciona para a lista de Itens cadastrados no banco de dados

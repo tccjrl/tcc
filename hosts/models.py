@@ -6,7 +6,7 @@ TIPOS_DE_INFORMACAO_RETORNADA_SNMP_GET = [
     ('ND', 'Numérico(Decimal)'),
     ('CH', 'Caracter'),
     ('LG', 'Log'),
-    ('TX', 'Texto')
+    #('TX', 'Texto')
 ]
 # Lista de unidades do intervado de atualização
 UNIDADES_INTERVALO_ATUALIZACAO = [
