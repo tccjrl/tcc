@@ -13,6 +13,16 @@
         <script src="{% static 'hosts/js/home.js' %}"></script>
     </head>
     <body>
+        <div style="text-align: center; background: rgb(176,224,230)">
+            <p><span style="font-size: 30px">Filtro</span></p>
+        </div>
+        <div style="text-align: center; background: rgb(176,224,230)">
+            <label for="initDateTimeInput">Data inicial:</label>
+            <input type="datetime-local" id="initDateTimeInput" name="initDateTimeInput">
+            <label for="finalDateTimeInput">Data final:</label>
+            <input type="datetime-local" id="finalDateTimeInput" name="finalDateTimeInput">
+            <button onclick="buttonFilterDate()" style="margin: 10px; width: 100px; height: 30px">Aplicar</button>
+        </div>
         <div id="dashboard">
         </div>
     </body>

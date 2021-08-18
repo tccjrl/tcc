@@ -1,4 +1,5 @@
-from pysnmp.hlapi import getCmd, SnmpEngine, CommunityData, UdpTransportTarget, ContextData, ObjectType, ObjectIdentity
+from pysnmp.hlapi import getCmd, SnmpEngine, CommunityData, UdpTransportTarget, ContextData, ObjectType,\
+    ObjectIdentity
 
 
 def snmpGet(ip, oid, community='public', versao_snmp=0, porta=161):

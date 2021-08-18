@@ -5,6 +5,7 @@ $.ajax({
     url: endpoint,
     success: function(data){
         data = Object.values(data)
+        setDataTimeNow()
         setChart(data[0])
     },
     error: function(error_data){
@@ -91,11 +92,27 @@ function createDivItens(host){
 
 //cria o grafico
 function criaChart(nomeHost, item){
-    console.log(item['labels'])
+    //console.log(item['labels'])
     var nomeItem = item['item_nome']
     var canvas = "canvas"
     var ctx = document.getElementById(canvas + "+" + nomeHost + "+" + nomeItem)
     labels = formatTimeLabel(item['labels'])
+    info = dateFilter(labels, item['data'])
+
+
+    //array de cores vazio
+    colors = [];
+
+    //verifica se data é número ou inválido
+    for (i = 0; i < info['datasFiltered'].length; i++){
+        if (!isNaN(Number(info['datasFiltered'][i]))){
+            colors[i] = 'green'
+        }
+        else{
+            info['datasFiltered'][i] = 0
+            colors[i] = 'red'
+        }
+    }
 
     //Para itens do tipo: Numérico inteiro
     if (item['item_tipoInformacao'] == "NI") {
@@ -103,12 +120,13 @@ function criaChart(nomeHost, item){
         var chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: info['labelsFiltered'],
                 datasets: [{
                     label: nomeItem,
-                    data: item['data'],
-                    borderColor: 'green',
-                    backgroundColor: 'green',
+                    data: info['datasFiltered'],
+                    borderWidth: 6,
+                    borderColor: colors,
+                    backgroundColor: 'rgba(126,232,85,0.45)',
                 }]
             }
         })
@@ -120,11 +138,12 @@ function criaChart(nomeHost, item){
         var chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: item['labels'],
+                labels: info['labelsFiltered'],
                 datasets: [{
                     label: nomeItem,
-                    data: item['data'],
-                    borderColor: 'green',
+                    data: info['datasFiltered'],
+                    borderWidth: 6,
+                    borderColor: colors,
                     backgroundColor: 'green',
                 }]
             }
@@ -135,8 +154,11 @@ function criaChart(nomeHost, item){
 //cria elemento de caracter
 function criaCharData (nomeHost, Item){
 
+    var info = dateFilter(Item['labels'], Item['data'])
+    //console.log(info)
+
     var ct = -1
-    var labels = formatTimeLabel(Item['labels'])
+    var labels = info['labelsFiltered']
     var divItem = document.getElementById(nomeHost + "+" + Item['item_nome'])
     var textArea = document.createElement('p')
     var atualizao = document.createElement('p')
@@ -148,7 +170,7 @@ function criaCharData (nomeHost, Item){
     textArea.style.textAlign = "center"
     textArea.style.fontSize = "25px"
 
-    for (let data of Item['data']){
+    for (let data of info['datasFiltered']){
         ct = ct + 1
     }
 
@@ -184,8 +206,10 @@ function criaLogData (nomeHost, Item){
     var textArea = document.createElement('textarea')
     var str = ''
 
-    for (let label of formatTimeLabel(Item['labels'])) {
-        str = label + ' : ' + Item['data'][ct] + "\n"
+    var info = dateFilter(Item['labels'], Item['data'])
+
+    for (let label of info['labelsFiltered']) {
+        str = label + ' : ' + info['datasFiltered'][ct] + "\n"
         var logTextNode = document.createTextNode(str)
         textArea.appendChild(logTextNode)
         textArea.style.width = '50%'
@@ -207,4 +231,112 @@ function formatTimeLabel (listLabel) {
     }
 
     return formatedListLabel
+}
+
+//Seta data inicial e final assim que abre a página
+function setDataTimeNow(){
+    //formato para set no imput datatime-local: 2017-06-13T13:00
+
+    //Data inicial
+    var initDate = new Date();
+    initDate.setHours(initDate.getHours() - 1); // diminui uma hora
+    var initDay = String(initDate.getDate()).padStart(2, '0');
+    var initMonth = String(initDate.getMonth() + 1).padStart(2, '0');
+    var initYear = initDate.getFullYear();
+    var initHour = String(initDate.getHours()).padStart(2, '0');
+    var initMinute = String(initDate.getMinutes()).padStart(2, '0');
+    var initDateFmtd = initYear + '-' + initMonth + '-' + initDay + 'T' + initHour + ':' + initMinute;
+    var dateTimeInit = document.getElementById('initDateTimeInput').value = initDateFmtd
+    //console.log(initDateFmtd)
+
+    //Data final
+    var finalDate = new Date();
+    var finalDay = String(finalDate.getDate()).padStart(2, '0');
+    var finalMonth = String(finalDate.getMonth() + 1).padStart(2, '0');
+    var finalYear = finalDate.getFullYear();
+    var finalHour = String(finalDate.getHours()).padStart(2, '0');
+    var finalMinute = String(finalDate.getMinutes()).padStart(2, '0');
+    var finalDateFmtd = finalYear + '-' + finalMonth + '-' + finalDay + 'T' + finalHour + ':' + finalMinute;
+    var dateTimeFinal = document.getElementById('finalDateTimeInput').value = finalDateFmtd
+    //console.log(finalDateFmtd)
+}
+
+function dateFilter(labels, datas){
+
+    var dateTimeInit = document.getElementById('initDateTimeInput').value
+    //console.log(dateTimeInit)
+    var initDate = new Date()
+    initDate.setFullYear(dateTimeInit.substr(0,4))
+    initDate.setMonth(parseInt(dateTimeInit.substr(5, 2))-1)
+    initDate.setDate(dateTimeInit.substr(8, 2))
+    initDate.setHours(dateTimeInit.substr(11, 2))
+    initDate.setMinutes(dateTimeInit.substr(14, 2))
+    //console.log(initDate)
+
+    var dateTimeFinal = document.getElementById('finalDateTimeInput').value
+    var finalDate = new Date()
+    finalDate.setFullYear(dateTimeFinal.substr(0,4))
+    finalDate.setMonth(parseInt(dateTimeFinal.substr(5, 2))-1)
+    finalDate.setDate(dateTimeFinal.substr(8, 2))
+    finalDate.setHours(dateTimeFinal.substr(11, 2))
+    finalDate.setMinutes(dateTimeFinal.substr(14, 2))
+
+    listDates = []
+
+    for (let date of labels){
+
+        var objDate = new Date()
+        objDate.setFullYear(date.substr(0,4))
+        objDate.setMonth(parseInt(date.substr(5, 2))-1)
+        //console.log(date.substr(5, 2))
+        objDate.setDate(date.substr(8, 2))
+        objDate.setHours(date.substr(11, 2))
+        objDate.setMinutes(date.substr(14, 2))
+        //console.log(date)
+        //console.log(objDate)
+        listDates.push(objDate)
+    }
+
+
+    labelsFiltered = []
+    datasFiltered = []
+    ct = 0
+    //2021-08-16 21:03:18
+
+    for (let date of listDates){
+        if ((date >= initDate) && (date <= finalDate)){
+            var day = String(date.getDate()).padStart(2, '0');
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var year = date.getFullYear();
+            var hour = String(date.getHours()).padStart(2, '0');
+            var minute = String(date.getMinutes()).padStart(2, '0');
+            labelsFiltered.push(year + '-' + month + '-' + day + ' ' + hour + ':' + minute)
+            datasFiltered.push(datas[ct])
+        }
+        ct = ct + 1
+    }
+    ct = 0
+    return {
+        labelsFiltered: labelsFiltered,
+        datasFiltered: datasFiltered
+    }
+}
+
+function buttonFilterDate(){
+
+    document.getElementById('dashboard').innerHTML = '';
+
+
+    $.ajax({
+    method: "GET",
+    url: endpoint,
+    success: function(data){
+        data = Object.values(data)
+        //setDataTimeNow()
+        setChart(data[0])
+    },
+    error: function(error_data){
+        console.log("error")
+    }
+})
 }
