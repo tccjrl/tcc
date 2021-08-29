@@ -77,7 +77,7 @@ def createTaskCleanData(host_nomeTabela_snmpGet,
 
     intervalo_id = None
 
-    novoIntervalo = IntervalSchedule(every=1, period='minutes')
+    novoIntervalo = IntervalSchedule(every=5, period='minutes')
 
     intervalosCadastrados = IntervalSchedule.objects.all()
 

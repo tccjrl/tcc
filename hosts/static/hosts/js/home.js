@@ -159,6 +159,7 @@ function criaCharData (nomeHost, Item){
 
     var ct = -1
     var labels = info['labelsFiltered']
+    var datas = info['datasFiltered']
     var divItem = document.getElementById(nomeHost + "+" + Item['item_nome'])
     var textArea = document.createElement('p')
     var atualizao = document.createElement('p')
@@ -170,12 +171,12 @@ function criaCharData (nomeHost, Item){
     textArea.style.textAlign = "center"
     textArea.style.fontSize = "25px"
 
-    for (let data of info['datasFiltered']){
+    for (let data of datas){
         ct = ct + 1
     }
 
 
-    var textNode = document.createTextNode(Item['data'][ct])
+    var textNode = document.createTextNode(datas[ct])
     var textNodeAtualicao = document.createTextNode('Última atualização: ' + labels[ct])
 
     atualizao.appendChild(textNodeAtualicao)
@@ -218,6 +219,7 @@ function criaLogData (nomeHost, Item){
         textArea.style.left = '25%'
 
         divItem.appendChild(textArea)
+        ct = ct + 1
     }
 }
 

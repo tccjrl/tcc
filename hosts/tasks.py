@@ -350,7 +350,7 @@ def create_task_CleanData_item_updated(item_id,
 
         intervalo_id = None
 
-        novoIntervalo = IntervalSchedule(every=1,
+        novoIntervalo = IntervalSchedule(every=5,
                                          period='minutes')
 
         intervalosCadastrados = IntervalSchedule.objects.all()
