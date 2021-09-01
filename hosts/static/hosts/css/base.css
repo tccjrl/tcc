@@ -20,7 +20,7 @@ ul{
     background: rgba(16,16,16,.5);
     width: 15%;
     height: 100%;
-    position: absolute;
+    position: fixed;
 }
 
 ul{
@@ -164,4 +164,8 @@ form button:hover{
 #voltar:hover{
     background: rgba(16, 16, 16, .5);
     color: white;
+}
+
+#id_item_expressaoConversao{
+    width: 300px;
 }

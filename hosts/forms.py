@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput
 from .models import Host, Template, Item
 
 
@@ -40,7 +40,7 @@ class ItemForm(ModelForm):
     class Meta:
         model = Item
         fields = ['item_nome', 'item_oid', 'item_tipoInformacao', 'item_intervaloAtualizacao',
-                  'item_intervaloAtualizacaoUn', 'item_tempoArmazenamentoDados', 'item_tempoArmazenamentoDadosUn']
+                  'item_intervaloAtualizacaoUn', 'item_tempoArmazenamentoDados', 'item_tempoArmazenamentoDadosUn', 'item_expressaoConversao']
         labels = {
             'item_nome': 'Nome',
             'item_oid': 'OID',
@@ -49,4 +49,8 @@ class ItemForm(ModelForm):
             'item_intervaloAtualizacaoUn': 'Unidade da frequência',
             'item_tempoArmazenamentoDados': 'Tempo de armazenamento dos dados',
             'item_tempoArmazenamentoDadosUn': 'Unidade do tempo de armazenamento dos dados',
+            'item_expressaoConversao': 'Expressão para conversão dos dados',
+        }
+        widgets = {
+            'item_expressaoConversao': TextInput(attrs={'placeholder': 'Exemplo: =x/100 onde x é o valor do objeto'}),
         }

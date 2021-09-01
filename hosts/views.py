@@ -41,6 +41,9 @@ def getData(request):
             labels_data = pegaDadosDash(tabela_snmpGet=host.host_nomeTabela_snmpGet, id_item=item.id)
             item_dict['labels'] = labels_data[0]
             item_dict['data'] = labels_data[1]
+            #começo da cagada
+            item_dict['expression'] = item.item_expressaoConversao
+            #final da cagada
             lista_itens_dados.append(item_dict)
 
         host_dict['itens'] = lista_itens_dados

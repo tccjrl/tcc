@@ -63,6 +63,7 @@ function createDivItens(host){
         var br = document.createElement('br')
         divItem.appendChild(br)
 
+
         //Se o item for do tipo Numérico gera o elemento canvas para o gráfico
         if ((item['item_tipoInformacao'] == "NI") || (item['item_tipoInformacao'] == "ND")) {
             var canvasItem = document.createElement('canvas')
@@ -92,13 +93,18 @@ function createDivItens(host){
 
 //cria o grafico
 function criaChart(nomeHost, item){
-    //console.log(item['labels'])
     var nomeItem = item['item_nome']
     var canvas = "canvas"
     var ctx = document.getElementById(canvas + "+" + nomeHost + "+" + nomeItem)
     labels = formatTimeLabel(item['labels'])
     info = dateFilter(labels, item['data'])
 
+    //Aplica expressão ao valor do objetivo se tiver expressão
+    if (((item['expression'] != null)) && (isNumber(info['datasFiltered'][0]))) {
+        for (let i = 0; i < info['datasFiltered'].length; i++) {
+            info['datasFiltered'][i] = calcExpression(info['datasFiltered'][i], item['expression'])
+        }
+    }
 
     //array de cores vazio
     colors = [];
@@ -155,7 +161,13 @@ function criaChart(nomeHost, item){
 function criaCharData (nomeHost, Item){
 
     var info = dateFilter(Item['labels'], Item['data'])
-    //console.log(info)
+
+    //Aplica expressão ao valor do objetivo se tiver expressão
+    if (((Item['expression'] != null)) && (isNumber(info['datasFiltered'][0]))) {
+        for (let i = 0; i < info['datasFiltered'].length; i++) {
+            info['datasFiltered'][i] = calcExpression(info['datasFiltered'][i], Item['expression'])
+        }
+    }
 
     var ct = -1
     var labels = info['labelsFiltered']
@@ -209,6 +221,13 @@ function criaLogData (nomeHost, Item){
 
     var info = dateFilter(Item['labels'], Item['data'])
 
+    //Aplica expressão ao valor do objetivo se tiver expressão
+    if (((Item['expression'] != null)) && (isNumber(info['datasFiltered'][0]))) {
+        for (let i = 0; i < info['datasFiltered'].length; i++) {
+            info['datasFiltered'][i] = calcExpression(info['datasFiltered'][i], Item['expression'])
+        }
+    }
+
     for (let label of info['labelsFiltered']) {
         str = label + ' : ' + info['datasFiltered'][ct] + "\n"
         var logTextNode = document.createTextNode(str)
@@ -249,7 +268,6 @@ function setDataTimeNow(){
     var initMinute = String(initDate.getMinutes()).padStart(2, '0');
     var initDateFmtd = initYear + '-' + initMonth + '-' + initDay + 'T' + initHour + ':' + initMinute;
     var dateTimeInit = document.getElementById('initDateTimeInput').value = initDateFmtd
-    //console.log(initDateFmtd)
 
     //Data final
     var finalDate = new Date();
@@ -260,20 +278,17 @@ function setDataTimeNow(){
     var finalMinute = String(finalDate.getMinutes()).padStart(2, '0');
     var finalDateFmtd = finalYear + '-' + finalMonth + '-' + finalDay + 'T' + finalHour + ':' + finalMinute;
     var dateTimeFinal = document.getElementById('finalDateTimeInput').value = finalDateFmtd
-    //console.log(finalDateFmtd)
 }
 
 function dateFilter(labels, datas){
 
     var dateTimeInit = document.getElementById('initDateTimeInput').value
-    //console.log(dateTimeInit)
     var initDate = new Date()
     initDate.setFullYear(dateTimeInit.substr(0,4))
     initDate.setMonth(parseInt(dateTimeInit.substr(5, 2))-1)
     initDate.setDate(dateTimeInit.substr(8, 2))
     initDate.setHours(dateTimeInit.substr(11, 2))
     initDate.setMinutes(dateTimeInit.substr(14, 2))
-    //console.log(initDate)
 
     var dateTimeFinal = document.getElementById('finalDateTimeInput').value
     var finalDate = new Date()
@@ -290,12 +305,9 @@ function dateFilter(labels, datas){
         var objDate = new Date()
         objDate.setFullYear(date.substr(0,4))
         objDate.setMonth(parseInt(date.substr(5, 2))-1)
-        //console.log(date.substr(5, 2))
         objDate.setDate(date.substr(8, 2))
         objDate.setHours(date.substr(11, 2))
         objDate.setMinutes(date.substr(14, 2))
-        //console.log(date)
-        //console.log(objDate)
         listDates.push(objDate)
     }
 
@@ -341,4 +353,17 @@ function buttonFilterDate(){
         console.log("error")
     }
 })
+}
+
+function calcExpression (value, expression) {
+
+    let strValue = String(value)
+    let strExpression = String(expression).split("=")[1]
+
+    return eval(strExpression.replace('x', strValue))
+}
+
+//Verifica se o valor contém números
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }

@@ -39,6 +39,7 @@ class Item(models.Model):
     item_tempoArmazenamentoDados = models.PositiveSmallIntegerField(default=90)
     item_tempoArmazenamentoDadosUn = models.CharField(choices=UNIDADES_INTERVALO_ARMAZENAMENTO, max_length=100,
                                                       default=UNIDADES_INTERVALO_ARMAZENAMENTO.__getitem__(2))
+    item_expressaoConversao = models.CharField(max_length=100, null=True, blank=True)
 
     # Função que retorna na view o nome do objeto Item
     def __str__(self):
