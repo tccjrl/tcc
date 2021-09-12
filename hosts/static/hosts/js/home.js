@@ -21,6 +21,7 @@ function setChart(lista_hosts) {
         var divHost = document.createElement('div')
         divHost.setAttribute('id', host[0])
         var pnomeHost = document.createElement('p')
+        pnomeHost.setAttribute('class', 'pNomeHost')
         var nomeHost = document.createTextNode(host[0])
         pnomeHost.appendChild(nomeHost)
 
@@ -39,6 +40,36 @@ function setChart(lista_hosts) {
         //adiciona espaço
         var br = document.createElement('br')
         dashboard.appendChild(br)
+
+        let closeIcone = document.createElement('img')
+        closeIcone.setAttribute('src', 'static/hosts/images/close.png')
+        closeIcone.setAttribute('width', '25px')
+        closeIcone.setAttribute('height', '25px')
+        closeIcone.setAttribute('style', 'float:right')
+        closeIcone.setAttribute('id', divHost.getAttribute('id'))
+        closeIcone.style.margin = '3px'
+        closeIcone.setAttribute('onclick', 'closeDiv(this.id)')
+        pnomeHost.appendChild(closeIcone)
+
+        let maxIcone = document.createElement('img')
+        maxIcone.setAttribute('src', 'static/hosts/images/max.png')
+        maxIcone.setAttribute('width', '25px')
+        maxIcone.setAttribute('height', '25px')
+        maxIcone.setAttribute('style', 'float:right')
+        maxIcone.setAttribute('id', divHost.getAttribute('id'))
+        maxIcone.style.margin = '3px'
+        maxIcone.setAttribute('onclick', 'maxDiv(this.id)')
+        pnomeHost.appendChild(maxIcone)
+
+        let minIcone = document.createElement('img')
+        minIcone.setAttribute('src', 'static/hosts/images/min.png')
+        minIcone.setAttribute('width', '25px')
+        minIcone.setAttribute('height', '25px')
+        minIcone.setAttribute('style', 'float:right')
+        minIcone.setAttribute('id', divHost.getAttribute('id'))
+        minIcone.style.margin = '3px'
+        minIcone.setAttribute('onclick', 'minDiv(this.id)')
+        pnomeHost.appendChild(minIcone)
     }
 }
 
@@ -53,11 +84,13 @@ function createDivItens(host){
         divItem.style.borderStyle = "groove"
 
         var pNomeItem = document.createElement('p')
+        pNomeItem.setAttribute('class', 'pNomeItem')
         var nomeItem = document.createTextNode(item['item_nome'])
         pNomeItem.appendChild(nomeItem)
 
         pNomeItem.style.textAlign = "center"
         pNomeItem.style.fontSize = "20px"
+        pNomeItem.style.height = '30px'
 
         divItem.appendChild(pNomeItem)
         var br = document.createElement('br')
@@ -88,6 +121,37 @@ function createDivItens(host){
         if ((item['item_tipoInformacao'] == "LG")) {
             criaLogData(nomeHost, item)
         }
+
+        let closeIcone = document.createElement('img')
+        closeIcone.setAttribute('src', 'static/hosts/images/close.png')
+        closeIcone.setAttribute('width', '25px')
+        closeIcone.setAttribute('height', '25px')
+        closeIcone.setAttribute('style', 'float:right')
+        closeIcone.setAttribute('id', divItem.getAttribute('id'))
+        closeIcone.style.margin = '3px'
+        closeIcone.setAttribute('onclick', 'closeDiv(this.id)')
+        pNomeItem.appendChild(closeIcone)
+
+        let maxIcone = document.createElement('img')
+        maxIcone.setAttribute('src', 'static/hosts/images/max.png')
+        maxIcone.setAttribute('width', '25px')
+        maxIcone.setAttribute('height', '25px')
+        maxIcone.setAttribute('style', 'float:right')
+        maxIcone.setAttribute('id', divItem.getAttribute('id'))
+        maxIcone.style.margin = '3px'
+        maxIcone.setAttribute('onclick', 'maxDiv(this.id)')
+        pNomeItem.appendChild(maxIcone)
+
+        let minIcone = document.createElement('img')
+        minIcone.setAttribute('src', 'static/hosts/images/min.png')
+        minIcone.setAttribute('width', '25px')
+        minIcone.setAttribute('height', '25px')
+        minIcone.setAttribute('style', 'float:right')
+        minIcone.setAttribute('id', divItem.getAttribute('id'))
+        minIcone.style.margin = '3px'
+        minIcone.setAttribute('onclick', 'minDiv(this.id)')
+        pNomeItem.appendChild(minIcone)
+
     }
 }
 
@@ -200,19 +264,6 @@ function criaCharData (nomeHost, Item){
 
 //cria elemento de log
 function criaLogData (nomeHost, Item){
-
-    /*var ct = 0
-    var divItem = document.getElementById(nomeHost + "+" + Item['item_nome'])
-    var str = ''
-
-    for (let label of formatTimeLabel(Item['labels'])) {
-        str = label + ' : ' + Item['data'][ct]
-        var logP = document.createElement('p')
-        var logTextNode = document.createTextNode(str)
-        logP.appendChild(logTextNode)
-        divItem.appendChild(logP)
-        ct = ct + 1
-    }*/
 
     var ct = 0
     var divItem = document.getElementById(nomeHost + "+" + Item['item_nome'])
@@ -357,13 +408,42 @@ function buttonFilterDate(){
 
 function calcExpression (value, expression) {
 
-    let strValue = String(value)
-    let strExpression = String(expression).split("=")[1]
-
-    return eval(strExpression.replace('x', strValue))
+    try {
+        let strValue = String(value)
+        let strExpression = String(expression)
+        return eval(strExpression.replace('{OID}', strValue))
+    }
+    catch (e){
+        return 'Erro: ' + e.message
+    }
 }
 
 //Verifica se o valor contém números
 function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function closeDiv(divId) {
+    console.log(divId)
+    let myDiv = document.getElementById(divId)
+    myDiv.parentNode.removeChild(myDiv)
+}
+
+function minDiv(divId) {
+    let divChilds = document.getElementById(divId).childNodes;
+    for (let divChild of divChilds) {
+        if ((divChild.getAttribute('class') == 'pNomeItem') || (divChild.getAttribute('class') == 'pNomeHost')) {
+            // Não faz nada
+        }
+        else {
+            divChild.style.display = 'none';
+        }
+    }
+}
+
+function maxDiv(divId) {
+    let divChilds = document.getElementById(divId).childNodes;
+    for (let divChild of divChilds) {
+        divChild.style.display = 'block';
+    }
 }

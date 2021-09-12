@@ -49,8 +49,9 @@ class ItemForm(ModelForm):
             'item_intervaloAtualizacaoUn': 'Unidade da frequência',
             'item_tempoArmazenamentoDados': 'Tempo de armazenamento dos dados',
             'item_tempoArmazenamentoDadosUn': 'Unidade do tempo de armazenamento dos dados',
-            'item_expressaoConversao': 'Expressão para conversão dos dados',
+            'item_expressaoConversao': 'Código javascript para conversão dos dados',
         }
         widgets = {
-            'item_expressaoConversao': TextInput(attrs={'placeholder': 'Exemplo: =x/100 onde x é o valor do objeto'}),
+            'item_expressaoConversao': TextInput(attrs={'placeholder': 'Exemplo: {OID}/100.toFixed(2) onde OID é o valor do '
+                                                                       'objeto'}),
         }
