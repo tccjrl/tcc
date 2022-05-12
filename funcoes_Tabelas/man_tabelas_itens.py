@@ -2,7 +2,7 @@ import os.path
 import sqlite3
 import datetime
 
-caminho_bancoDeDados = r'/home/johny/PycharmProjects/tcc/db.sqlite3'  # Caminho do banco de dados
+caminho_bancoDeDados = r'/home/lucas/PycharmProjects/tcc-back/db.sqlite3'  # Caminho do banco de dados
 
 IDENTIFICADOR_TABELA_SNMPGET = 'snmp_get_'  # Prefixo para o nome das tabelas de armazenamento dos hosts
 FORMATO_DATA_NOME_TABELA_SNMPGET = '%d_%m_%Y_%H_%M_%S'  # Formato de data e hora para nome das tabelas dos hosts
@@ -10,6 +10,7 @@ FORMATO_DATA_NOME_TABELA_SNMPGET = '%d_%m_%Y_%H_%M_%S'  # Formato de data e hora
 
 #  Função para criar tabela de armazenamento quando um host for cadastrado
 def criaTabelaSnmpGet(nome_tabela_snmpGet):
+
     #  Verifica se o caminho passado existe
     if os.path.exists(caminho_bancoDeDados):
         conexao = sqlite3.connect(caminho_bancoDeDados)
@@ -23,6 +24,7 @@ def criaTabelaSnmpGet(nome_tabela_snmpGet):
                   'info varchar(150) NOT NULL)')
 
         conexao.close()
+        return print('Deu certo')
     else:  # Se o caminho não existir então printa um aviso no console para corrigir o caminho do banco de dados
         return print('Corrija o caminho do banco de dados')
 

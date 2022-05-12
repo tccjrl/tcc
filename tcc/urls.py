@@ -14,14 +14,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from hosts.views import homeView, listaHost, novoHost, atualizaHost, deletaHost, listaTemplate, novoTemplate, atualizaTemplate, \
-    deletaTemplate, listaItem, novoItem, atualizaItem, deletaItem, getData
+from django.urls import path, include
+from rest_framework import routers
+
+
+from hosts.views import homeView, getData, listaHost, novoHost, atualizaHost, deletaHost, listaTemplate, novoTemplate, \
+    atualizaTemplate, deletaTemplate, listaItem, novoItem, atualizaItem, deletaItem
+from hosts.viewsets import HostViewSet, ChartViewSet, TemplateViewSet, ItemViewSet
+
+router = routers.DefaultRouter()
+
+router.register(r'host', HostViewSet, basename='host')
+router.register(r'data', ChartViewSet, basename='data')
+router.register(r'template', TemplateViewSet, basename='template')
+router.register(r'item', ItemViewSet, basename='item')
 
 urlpatterns = [
+    path('', include(router.urls)),
+
     path('admin/', admin.site.urls),
     # ==================================================================================================================
-    path('', homeView, name='url_home'),
+    path('home', homeView, name='url_home'),
     path('api/data/', getData, name='api_data'),
     # ==================================================================================================================
     path('lista_host/', listaHost, name='url_cadastroHost'),
@@ -37,5 +50,6 @@ urlpatterns = [
     path('lista_item/', listaItem, name='url_listaItem'),
     path('novo_item/', novoItem, name='url_novoItem'),
     path('atualiza_item/<int:pk>/', atualizaItem, name='url_atualizaItem'),
-    path('deleta_item/<int:pk>/', deletaItem, name='url_deletaItem'),
+    path('deleta_item/<int:pk>/', deletaItem, name='url_deletaItem')
+
 ]
